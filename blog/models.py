@@ -11,21 +11,22 @@ class TimeStampedModel(models.Model):
 
 class Category(models.Model):
     category_name = models.CharField(max_length = 200)
+    post_count = models.IntegerField(default=0)
 
 class Post(TimeStampedModel):
     post_title = models.CharField(max_length = 200)
     post_content = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True,)
-    like = models.IntegerField(defualt=0)
+    like = models.IntegerField(default=0)
 
 class Opinion(TimeStampedModel):
-    post = models.ForeignKey(Post, on_delete=models.CASECADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     opinion_content = models.TextField()
     post_content = models.TextField()
-    user = models.Forignkey(User)
+    user = models.ForeignKey(User)
 
 class Comment(TimeStampedModel):
-    opinion = models.ForeignKey(Opinion, on_delete=models.CASECADE)
+    opinion = models.ForeignKey(Opinion, on_delete=models.CASCADE)
     comment_content = models.TextField()
     from_user = models.ForeignKey(User)
     to_user = models.ForeignKey(User)
