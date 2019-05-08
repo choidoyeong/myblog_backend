@@ -23,10 +23,10 @@ class Opinion(TimeStampedModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     opinion_content = models.TextField()
     post_content = models.TextField()
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
 class Comment(TimeStampedModel):
     opinion = models.ForeignKey(Opinion, on_delete=models.CASCADE)
     comment_content = models.TextField()
-    from_user = models.ForeignKey(User)
-    to_user = models.ForeignKey(User)
+    from_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    to_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
