@@ -14,10 +14,10 @@ class CategoryList(APIView):
         categorys = Category.objects.all()
         serializer = CategorySerializer(categorys, many=True)
         return Response(serializer.data)
-    
-    def post(self, request, format=None):
-        serializer = CategorySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CategoryDetail(APIView):
+
+    def get(self, request, name, format=None):
+        posts = Post.objects.filter(category = name)
+        serializer = PostSerializer(posts)
+        return Response(serializer.data)

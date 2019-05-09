@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('id','category_name')
+        fields = ('id','category_name', 'post_count')
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
