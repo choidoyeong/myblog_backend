@@ -21,3 +21,10 @@ class CategoryDetail(APIView):
         posts = Post.objects.filter(category = name)
         serializer = PostSerializer(posts)
         return Response(serializer.data)
+
+class PostList(APIView):
+    
+    def get(self, request, fromat=None):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
