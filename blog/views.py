@@ -29,3 +29,13 @@ class PostList(APIView):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+class PostDetail(APIView):
+
+    def get(self, request, pk, format = None):
+        try:
+            post = Post.objects.get(pk= pk)
+        except Post.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = PostSerializer(post)
+        return Response(serializer.data)
