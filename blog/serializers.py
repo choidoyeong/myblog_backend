@@ -15,7 +15,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        feilds = ('id', 'post_title', 'post_content', 'category', 'like')
+        fields = ('id', 'post_title', 'post_content', 'category', 'like')
 
 class OpinionSerializer(serializers.ModelSerializer):
     class Meta:

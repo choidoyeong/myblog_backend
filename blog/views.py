@@ -18,8 +18,9 @@ class CategoryList(APIView):
 class CategoryDetail(APIView):
 
     def get(self, request, name, format=None):
-        posts = Post.objects.filter(category = name)
-        serializer = PostSerializer(posts)
+        category = Category.objects.get(category_name = name)
+        posts = Post.objects.filter(category = category)
+        serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
 class PostList(APIView):

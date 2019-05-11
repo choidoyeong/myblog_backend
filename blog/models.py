@@ -28,5 +28,5 @@ class Opinion(TimeStampedModel):
 class Comment(TimeStampedModel):
     opinion = models.ForeignKey(Opinion, on_delete=models.CASCADE)
     comment_content = models.TextField()
-    from_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    to_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    from_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='from_user')
+    to_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='to_user')
