@@ -6,6 +6,7 @@ from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.core.mail import EmailMessage
 
 class Login(APIView):
     def post(self, request, format):
@@ -68,5 +69,36 @@ class OpinionList(APIView):
         serializer = OpinionSerializer(data = data)
         if serializer.is_valid():
             serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CommentList(APIView):
+    serializer_class = CommentSerializer
+
+    def get(self, request, pk, format=None):
+        comments = Comment.objects.filter(opinion_id = pk)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, pk, format=None):
+        data = {
+            'opinion' : pk,
+            'comment_content': request.data['comment_content'],
+            'from_user': request.data['from_user'],
+            'to_user': request.data['to_user']
+        }
+        serializer = CommentSerializer(data = data)
+        if serializer.is_valid():
+            serializer.save()
+            if request.data['from_user'] != request.data['to_user']:
+                from_user = User.objects.get(pk=request.data['from_user'])
+                to_user = User.objects.get(pk=request.data['to_user'])
+                body = from_user.username + '님이 ' + request.data['comment_content'] + ' 라고 답장하셨습니다.'
+                email = EmailMessage(
+                    'doyeong blog에 작성하신 댓글에 대한 답장입니다.', 
+                    body, 
+                    to=[to_user.email]
+                )
+                email.send()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
