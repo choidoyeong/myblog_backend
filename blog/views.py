@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import EmailMessage
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from rest_framework import permissions
 
 class Login(APIView):
@@ -15,7 +15,6 @@ class Login(APIView):
         user = authenticate(username=request.data['username'], password=request.data['password'])
         if user is not None:
             login(request, user)
-            print(user.id)
             return Response({'user_id': user.id, 'username': user.username}, status=status.HTTP_200_OK)
         return Response({'message': '아이디 혹은 비밀번호가 잘못되었습니다'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -28,6 +27,11 @@ class Signup(APIView):
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class Logout(APIView):
+    def post(self, request, format=None):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
 
 class CategoryList(APIView):
     serializer_class = CategorySerializer
