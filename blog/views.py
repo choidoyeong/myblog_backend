@@ -8,13 +8,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import EmailMessage
 from django.contrib.auth import login, authenticate
+from rest_framework import permissions
 
 class Login(APIView):
     def post(self, request, format=None):
         user = authenticate(username=request.data['username'], password=request.data['password'])
         if user is not None:
             login(request, user)
-            return Response({'message': '로그인 성공'}, status=status.HTTP_200_OK)
+            print(user.id)
+            return Response({'user_id': user.id, 'username': user.username}, status=status.HTTP_200_OK)
         return Response({'message': '아이디 혹은 비밀번호가 잘못되었습니다'}, status=status.HTTP_400_BAD_REQUEST)
 
 class Signup(APIView):
@@ -61,6 +63,7 @@ class PostDetail(APIView):
         return Response(serializer.data)
 
 class OpinionList(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = OpinionSerializer
 
     def get(self, request, pk, format=None):
@@ -83,6 +86,7 @@ class OpinionList(APIView):
 
 class CommentList(APIView):
     serializer_class = CommentSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get(self, request, pk, format=None):
         comments = Comment.objects.filter(opinion_id = pk)
