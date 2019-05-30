@@ -72,8 +72,15 @@ class OpinionList(APIView):
 
     def get(self, request, pk, format=None):
         opinions = Opinion.objects.filter(post_id = pk)
-        serializer = OpinionSerializer(opinions, many=True)
-        return Response(serializer.data)
+        data = []
+        for n in range(0, len(opinions)):
+            data.append({
+                'id': opinions[n].id,
+                'opinion_content': opinions[n].opinion_content,
+                'post_content': opinions[n].post_content,
+                'user': opinions[n].user.username
+            })
+        return Response(data)
 
     def post(self, request, pk, format=None):
         data = {
