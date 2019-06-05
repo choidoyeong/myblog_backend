@@ -10,6 +10,7 @@ from django.core.mail import EmailMessage
 from django.contrib.auth import login, authenticate, logout
 from rest_framework import permissions
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
 
 class Login(APIView):
     def post(self, request, format=None):
@@ -93,7 +94,13 @@ class OpinionList(APIView):
         serializer = OpinionSerializer(data = data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            data = {
+                'post': serializer.data['post'],
+                'opinion_content': request.data['opinion_content'],
+                'post_content': request.data['post_content'],
+                'user': User.objects.get(pk=request.data['user']).username
+            }
+            return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentList(APIView):
