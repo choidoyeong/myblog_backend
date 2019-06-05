@@ -9,13 +9,14 @@ from rest_framework import status
 from django.core.mail import EmailMessage
 from django.contrib.auth import login, authenticate, logout
 from rest_framework import permissions
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class Login(APIView):
     def post(self, request, format=None):
         user = authenticate(username=request.data['username'], password=request.data['password'])
         if user is not None:
-            login(request, user)
-            return Response({'user_id': user.id, 'username': user.username}, status=status.HTTP_200_OK)
+            refresh = RefreshToken.for_user(user)
+            return Response({'refresh': str(refresh), 'access': str(refresh.access_token),'user_id': user.id, 'username': user.username}, status=status.HTTP_200_OK)
         return Response({'message': '아이디 혹은 비밀번호가 잘못되었습니다'}, status=status.HTTP_400_BAD_REQUEST)
 
 class Signup(APIView):
